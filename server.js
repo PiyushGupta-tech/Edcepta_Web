@@ -1,5 +1,5 @@
 /**
- * Local dev server with Vercel-style rewrites for ZOHANEDU
+ * Local dev server with Vercel-style rewrites for EDCEPTA EDUCATION
  * Run: node server.js  or  npx node server.js
  */
 const http = require('http');
@@ -71,7 +71,7 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log('');
-  console.log('  ZOHANEDU running at http://localhost:' + PORT);
+  console.log('  EDCEPTA EDUCATION running at http://localhost:' + PORT);
   console.log('  Press Ctrl+C to stop.');
   console.log('');
 });
