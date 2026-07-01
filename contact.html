@@ -4,48 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - EDCEPTA EDUCATION</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        .contact-page { padding: 4rem 0 5rem; }
-        .contact-page h1 { font-size: 2.2rem; color: var(--text-main); margin-bottom: 0.5rem; text-align: center; }
-        .contact-page .subtitle { color: var(--text-tertiary); text-align: center; margin-bottom: 3rem; }
-        .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; max-width: 900px; margin: 0 auto; }
-        @media (max-width: 768px) { .contact-wrap { grid-template-columns: 1fr; } }
-        .contact-info { background: var(--surface); padding: 2rem; border-radius: 8px; border: 1px solid var(--border-color); }
-        .contact-info h2 { font-size: 1.25rem; color: var(--text-main); margin-bottom: 1rem; }
-        .contact-info p { color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.6; }
-        .contact-info a { color: var(--primary-mint); text-decoration: none; }
-        .contact-info a:hover { text-decoration: underline; }
-        .contact-form { background: var(--surface); padding: 2rem; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(30, 41, 59, 0.08); }
-        .contact-form label { display: block; color: var(--text-main); font-weight: 600; margin-bottom: 0.35rem; font-size: 0.95rem; }
-        .contact-form input, .contact-form textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 1rem; font-family: inherit; margin-bottom: 1rem; color: var(--text-main); background: var(--surface); }
-        .contact-form input:focus, .contact-form textarea:focus { outline: none; border-color: var(--primary-mint); }
-        .contact-form textarea { min-height: 120px; resize: vertical; }
-        .contact-form button { background: var(--primary-mint); color: var(--white); border: none; padding: 12px 24px; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-        .contact-form button:hover { background: var(--primary-mint-dark); }
-    </style>
+    <link rel="stylesheet" href="styles.css?v=74">
+    <link rel="stylesheet" href="js/info-page-fallback.css?v=1">
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
             <div class="nav-wrapper">
                 <a href="/" class="logo">
-                    <img src="images/edcepta-logo.png?v=5" alt="EDCEPTA EDUCATION">
+                    <img src="images/edcepta-logo.png?v=8" alt="EDCEPTA EDUCATION">
                 </a>
                 <ul class="nav-links">
-                    <li><a href="/#home">Home</a></li>
+                    <li><a href="/">Home</a></li>
                     <li><a href="/#courses">Courses</a></li>
-                    <li><a href="/#about">About</a></li>
-                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/about.html">About</a></li>
+                    <li><a href="/#membership">Membership</a></li>
+                    <li><a href="/contact.html">Contact</a></li>
                 </ul>
-                <button class="hamburger" id="hamburger">☰</button>
+                <button class="hamburger" id="hamburger" type="button" aria-label="Open menu">☰</button>
             </div>
         </div>
     </nav>
 
-    <main class="container contact-page">
+    <main class="container info-page contact-page">
         <h1>Contact Us</h1>
-        <p class="subtitle">Have a question or feedback? We’d love to hear from you.</p>
+        <p class="subtitle">Have a question about courses, membership, billing, or refunds? We are here to help.</p>
 
         <div class="contact-wrap">
             <div class="contact-info">
@@ -57,7 +40,8 @@
                 <a href="tel:+918287693368">+91 8287693368</a></p>
                 <p><strong>Address</strong><br>
                 UNIT T-3, B-812, NX ONE, TECHZONE IV, Greater Noida West, Noida, Gautambuddha Nagar, Uttar Pradesh - 201301</p>
-                <p style="margin-top: 1.5rem;">For course support, refunds, or general inquiries, use the form or email us directly. We typically respond within 1–2 business days.</p>
+                <p style="margin-top: 1.5rem;">For course access, EDCEPTA Plus membership, refund requests, or partnership inquiries, use the form or email us directly. We typically respond within 1–2 business days.</p>
+                <p style="margin-top: 1rem;">You may also visit our <a href="/faq.html">FAQ</a> for quick answers.</p>
             </div>
 
             <div class="contact-form">
@@ -80,44 +64,13 @@
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>About EDCEPTA EDUCATION</h3>
-                    <p>We provide high-quality online education to help you advance your career in technology and innovation.</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="/#home">Home</a></li>
-                        <li><a href="/#courses">Courses</a></li>
-                        <li><a href="/#about">About Us</a></li>
-                        <li><a href="/privacy-policy">Privacy Policy</a></li>
-                        <li><a href="/return-refund-policy">Return & Refund Policy</a></li>
-                        <li><a href="/terms-conditions">Terms & Conditions</a></li>
-                        <li><a href="/contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Contact</h3>
-                    <p><strong>EDCEPTA EDUCATION</strong></p>
-                    <p>Support: <a href="mailto:educepta@gmail.com">educepta@gmail.com</a></p>
-                    <p>UNIT T-3, B-812, NX ONE, TECHZONE IV, Greater Noida West, Noida, Gautambuddha Nagar, Uttar Pradesh - 201301</p>
-                    <p>Phone: +91 8287693368</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 EDCEPTA EDUCATION. All Rights Reserved.</p>
-            </div>
-        </div>
-    </footer>
-
+    <footer class="site-footer" aria-label="Site footer"></footer>
+    <script src="js/site-footer.js?v=7"></script>
     <script>
-        document.getElementById('hamburger').addEventListener('click', function() {
+        document.getElementById('hamburger').addEventListener('click', function () {
             document.querySelector('.nav-links').classList.toggle('active');
         });
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
+        document.getElementById('contactForm').addEventListener('submit', function (e) {
             e.preventDefault();
             alert('Thank you for your message. We will get back to you soon at the email you provided.');
             this.reset();

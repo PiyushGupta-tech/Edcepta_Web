@@ -1,7 +1,9 @@
 // Authentication Helper Functions
 function getCurrentUser() {
-    const currentUser = localStorage.getItem('currentUser');
-    return currentUser ? JSON.parse(currentUser) : null;
+    const raw =
+        localStorage.getItem('edcepta_current_user') ||
+        localStorage.getItem('currentUser');
+    return raw ? JSON.parse(raw) : null;
 }
 
 function isUserLoggedIn() {
@@ -31,7 +33,7 @@ const courses = [
         category: "web-development",
         duration: "8 Weeks",
         students: "3.5K",
-        price: 49999,
+        price: 20000,
         description: "Learn to build complete web applications using modern technologies like React, Node.js, and MongoDB.",
         image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=400&fit=crop"
     },
@@ -41,7 +43,7 @@ const courses = [
         category: "data-science",
         duration: "10 Weeks",
         students: "5K",
-        price: 59999,
+        price: 70000,
         description: "Comprehensive data science course covering statistics, data visualization, and machine learning algorithms.",
         image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop"
     },
@@ -51,7 +53,7 @@ const courses = [
         category: "cloud",
         duration: "9 Weeks",
         students: "2.8K",
-        price: 69999,
+        price: 20000,
         description: "Learn to deploy, manage, and scale applications on AWS cloud with CI/CD pipelines.",
         image: "https://images.unsplash.com/vector-1742999621152-286e6c68c770?q=80&w=1160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
@@ -71,7 +73,7 @@ const courses = [
         category: "web-development",
         duration: "6 Weeks",
         students: "3K",
-        price: 39999,
+        price: 40000,
         description: "Deep dive into advanced React patterns, hooks, context API, and performance optimization.",
         image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
@@ -91,7 +93,7 @@ const courses = [
         category: "cloud",
         duration: "7 Weeks",
         students: "2.2K",
-        price: 49999,
+        price: 40000,
         description: "Master containerization and orchestration with Docker and Kubernetes for microservices.",
         image: "https://images.unsplash.com/photo-1646627927863-19874c27316b?q=80&w=1828&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
@@ -101,7 +103,7 @@ const courses = [
         category: "ai-ml",
         duration: "8 Weeks",
         students: "1.8K",
-        price: 75000,
+        price: 20000,
         description: "Explore NLP techniques, transformers, and build chatbots and text processing applications.",
         image: "https://plus.unsplash.com/premium_photo-1733317429945-a3688f50430b?q=80&w=1915&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
@@ -111,7 +113,7 @@ const courses = [
         category: "web-development",
         duration: "7 Weeks",
         students: "2.5K",
-        price: 44999,
+        price: 20000,
         description: "Build modern full-stack applications with Next.js, handling both frontend and backend seamlessly.",
         image: "https://images.unsplash.com/photo-1643116774075-acc00caa9a7b?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },

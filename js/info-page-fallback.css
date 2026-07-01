@@ -1,0 +1,67 @@
+/* Fallback styles — ensures info pages show content even if main stylesheet fails */
+main.info-page,
+main.legal-page,
+main.contact-page,
+main.about-page,
+main.faq-page {
+    padding: 4rem 0 5rem;
+    min-height: 55vh;
+    color: #334155;
+    background: #fff7ed;
+}
+
+main.info-page h1,
+main.contact-page h1 {
+    color: #0f172a;
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    margin-bottom: 0.75rem;
+}
+
+main.info-page h2 {
+    color: #0f172a;
+    font-size: 1.35rem;
+    margin: 1.75rem 0 0.65rem;
+}
+
+main.info-page p,
+main.info-page li {
+    color: #475569;
+    line-height: 1.75;
+}
+
+main.info-page a {
+    color: #ea580c;
+    font-weight: 600;
+}
+
+.faq-answer {
+    display: block;
+    padding: 0 1.15rem 1rem;
+    color: #475569;
+    line-height: 1.75;
+}
+
+.faq-item details {
+    padding: 0.25rem 0;
+}
+
+.faq-item summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #0f172a;
+    padding: 0.85rem 1rem;
+    list-style: none;
+}
+
+.faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-item details[open] summary {
+    color: #ea580c;
+}
+
+.faq-item details p {
+    padding: 0 1rem 1rem;
+    margin: 0;
+}

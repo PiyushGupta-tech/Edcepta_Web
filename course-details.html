@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EDCEPTA EDUCATION</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=54">
     <style>
         .course-details-container {
             display: grid;
@@ -195,14 +195,15 @@
         <div class="container">
             <div class="nav-wrapper">
                 <a href="/" class="logo">
-                    <img src="images/edcepta-logo.png?v=5" alt="EDCEPTA EDUCATION">
+                    <img src="images/edcepta-logo.png?v=8" alt="EDCEPTA EDUCATION">
                 </a>
                 <ul class="nav-links">
                     <li><a href="/">Home</a></li>
                     <li><a href="/#courses">Courses</a></li>
-                    <li><a href="/#about">About</a></li>
-                    <li><a href="/#contact">Contact</a></li>
-                    <li><a href="/checkout" style="color: var(--primary-color); font-weight: bold;">🛒 Cart</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/#membership">Membership</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/checkout" class="nav-cart">🛒 Cart</a></li>
                 </ul>
                 <button class="hamburger" id="hamburger">☰</button>
             </div>
@@ -308,44 +309,12 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>About EDCEPTA EDUCATION</h3>
-                    <p>We provide high-quality online education to help you advance your career in technology and innovation.</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/#courses">Courses</a></li>
-                        <li><a href="/#about">About Us</a></li>
-                        <li><a href="/privacy-policy">Privacy Policy</a></li>
-                        <li><a href="/return-refund-policy">Return & Refund Policy</a></li>
-                        <li><a href="/terms-conditions">Terms & Conditions</a></li>
-                        <li><a href="/contact">Contact</a></li>
-                    </ul>
-                </div>
+    <footer class="site-footer" id="contact" aria-label="Site footer"></footer>
+    <script src="js/site-footer.js?v=7"></script>
 
-                <div class="footer-section">
-                    <h3>Contact</h3>
-                    <p><strong>EDCEPTA EDUCATION</strong></p>
-                    <p>Support: <a href="mailto:educepta@gmail.com">educepta@gmail.com</a></p>
-                    <p>UNIT T-3, B-812, NX ONE, TECHZONE IV, Greater Noida West, Noida, Gautambuddha Nagar, Uttar Pradesh - 201301</p>
-                    <p>Phone: +91 8287693368</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 EDCEPTA EDUCATION. All Rights Reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="config.js"></script>
-    <script src="data/courses_data.js"></script>
-    <script src="script-api.js"></script>
+<script src="config.js"></script>
+    <script src="data/courses_data.js?v=4"></script>
+    <script src="script-api.js?v=5"></script>
     <script>
         // Get course from URL parameter (course ID)
         const urlParams = new URLSearchParams(window.location.search);

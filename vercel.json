@@ -3,12 +3,16 @@
     { "source": "/login", "destination": "/login.html" },
     { "source": "/checkout", "destination": "/checkout.html" },
     { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/faq", "destination": "/faq.html" },
+    { "source": "/membership", "destination": "/membership.html" },
     { "source": "/course-details", "destination": "/course-details.html" },
     { "source": "/user-dashboard", "destination": "/user-dashboard.html" },
     { "source": "/admin-dashboard", "destination": "/admin-dashboard.html" },
     { "source": "/privacy-policy", "destination": "/privacy-policy.html" },
     { "source": "/return-refund-policy", "destination": "/return-refund-policy.html" },
     { "source": "/terms-conditions", "destination": "/terms-conditions.html" },
+    { "source": "/terms-of-service", "destination": "/terms-conditions.html" },
     { "source": "/test-api", "destination": "/test-api.html" },
     { "source": "/debug", "destination": "/debug.html" }
   ]

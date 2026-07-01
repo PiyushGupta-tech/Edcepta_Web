@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EDCEPTA EDUCATION</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=54">
     <style>
         .dashboard-container {
             display: flex;
@@ -31,22 +31,23 @@
         .dashboard-navbar .logo {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             text-decoration: none;
-            width: 118px;
-            height: 72px;
+            width: auto;
+            height: auto;
+            max-width: min(320px, 42vw);
             line-height: 0;
             background: #ffffff;
-            border-radius: 6px;
-            overflow: hidden;
+            border-radius: 0;
+            overflow: visible;
         }
 
         .dashboard-navbar .logo img {
-            height: 90px;
             width: auto;
-            max-width: 118px;
+            height: 44px;
+            max-width: 100%;
             object-fit: contain;
-            object-position: center center;
+            object-position: left center;
             background: #ffffff;
         }
 
@@ -551,7 +552,7 @@
     <!-- Top Navbar -->
     <nav class="dashboard-navbar">
         <a href="/" class="logo">
-            <img src="images/edcepta-logo.png?v=5" alt="EDCEPTA EDUCATION">
+            <img src="images/edcepta-logo.png?v=8" alt="EDCEPTA EDUCATION">
         </a>
         <button class="btn-logout" onclick="handleLogout()">Logout</button>
     </nav>
@@ -745,17 +746,16 @@
     </div>
 
     <script src="config.js"></script>
-    <script src="data/courses_data.js"></script>
-    <script src="script-api.js"></script>
+    <script src="data/courses_data.js?v=4"></script>
+    <script src="script-api.js?v=5"></script>
     <script>
         // Check if user is admin
         function checkAuth() {
-            const currentUser = localStorage.getItem('currentUser');
-            if (!currentUser) {
+            const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+            if (!user) {
                 window.location.href = '/login';
                 return;
             }
-            const user = JSON.parse(currentUser);
             if (user.role !== 'admin') {
                 window.location.href = '/user-dashboard';
                 return;
@@ -784,7 +784,7 @@
         }
 
         function loadStatistics() {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const users = typeof getAllUsers === 'function' ? getAllUsers() : [];
             const students = users.filter(u => u.role === 'student');
             const coursesList = courses || [];
             
@@ -822,7 +822,7 @@
         }
 
         function loadStudentsTable() {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const users = typeof getAllUsers === 'function' ? getAllUsers() : [];
             const students = users.filter(u => u.role === 'student');
             const tbody = document.getElementById('studentsTable');
 
@@ -915,23 +915,24 @@
                 return;
             }
 
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            const users = getAllUsers();
+            const userIndex = users.findIndex(u => (u._id || u.id) === (currentUser._id || currentUser.id));
             if (userIndex !== -1) {
                 users[userIndex].name = newName;
-                localStorage.setItem('users', JSON.stringify(users));
-                
+                localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
                 currentUser.name = newName;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
                 loadUserData();
-                
                 alert('Settings updated successfully!');
             }
         }
 
         function handleLogout() {
-            localStorage.removeItem('currentUser');
-            window.location.href = '/login';
+            if (typeof logoutUser === 'function') {
+                logoutUser();
+            } else {
+                window.location.href = '/login';
+            }
         }
 
         // Close modal when clicking outside

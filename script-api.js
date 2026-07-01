@@ -3,42 +3,146 @@
 // ============================================
 
 const STORAGE_KEYS = {
-    USERS: 'gurukul_users',
-    CURRENT_USER: 'currentUser', // Matching existing key
-    AUTH_TOKEN: 'authToken',     // Matching existing key
-    ORDERS: 'gurukul_orders',
+    USERS: 'edcepta_users',
+    CURRENT_USER: 'edcepta_current_user',
+    AUTH_TOKEN: 'edcepta_auth_token',
+    ORDERS: 'edcepta_orders',
 };
+
+const LEGACY_STORAGE_KEYS = {
+    USERS: 'gurukul_users',
+    ORDERS: 'gurukul_orders',
+    CURRENT_USER: 'currentUser',
+    AUTH_TOKEN: 'authToken',
+};
+
+const EDCEPTA_DEMO_USERS = [
+    {
+        _id: 'user_admin_educepta',
+        name: 'EDCEPTA Admin',
+        email: 'admin@educepta.in',
+        password: 'password123',
+        role: 'admin',
+        enrolledCourses: [],
+        wishlist: []
+    },
+    {
+        _id: 'user_student_educepta',
+        name: 'EDCEPTA Student',
+        email: 'student@educepta.in',
+        password: 'password123',
+        role: 'student',
+        enrolledCourses: [],
+        wishlist: []
+    }
+];
+
+function migrateLegacyEdceptaStorage() {
+    if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
+        const legacyUsers =
+            localStorage.getItem(LEGACY_STORAGE_KEYS.USERS) ||
+            localStorage.getItem('users');
+        if (legacyUsers) {
+            localStorage.setItem(STORAGE_KEYS.USERS, legacyUsers);
+        }
+    }
+
+    if (!localStorage.getItem(STORAGE_KEYS.ORDERS) && localStorage.getItem(LEGACY_STORAGE_KEYS.ORDERS)) {
+        localStorage.setItem(STORAGE_KEYS.ORDERS, localStorage.getItem(LEGACY_STORAGE_KEYS.ORDERS));
+    }
+
+    if (!localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) {
+        const legacySession =
+            localStorage.getItem(LEGACY_STORAGE_KEYS.CURRENT_USER) ||
+            localStorage.getItem('gurukul_current_user');
+        if (legacySession) {
+            localStorage.setItem(STORAGE_KEYS.CURRENT_USER, legacySession);
+        }
+    }
+
+    if (!localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN)) {
+        const legacyToken =
+            localStorage.getItem(LEGACY_STORAGE_KEYS.AUTH_TOKEN) ||
+            localStorage.getItem('gurukul_auth_token');
+        if (legacyToken) {
+            localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, legacyToken);
+        }
+    }
+
+    const emailMap = {
+        'admin@gurukul.com': 'admin@educepta.in',
+        'student@gurukul.com': 'student@educepta.in',
+    };
+    const nameMap = {
+        'admin@gurukul.com': 'EDCEPTA Admin',
+        'student@gurukul.com': 'EDCEPTA Student',
+    };
+
+    let users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
+    let usersChanged = false;
+    users.forEach(function (u) {
+        const oldEmail = u.email;
+        if (emailMap[oldEmail]) {
+            u.email = emailMap[oldEmail];
+            u.name = nameMap[oldEmail] || u.name;
+            usersChanged = true;
+        }
+    });
+    if (usersChanged) {
+        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+    }
+
+    const sessionRaw = localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
+    if (sessionRaw) {
+        try {
+            const sessionUser = JSON.parse(sessionRaw);
+            const oldSessionEmail = sessionUser.email;
+            if (emailMap[oldSessionEmail]) {
+                sessionUser.email = emailMap[oldSessionEmail];
+                sessionUser.name = nameMap[oldSessionEmail] || sessionUser.name;
+                localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(sessionUser));
+            }
+        } catch (e) { /* ignore */ }
+    }
+}
+
+function ensureEdceptaDemoUsers() {
+    let users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
+    let changed = false;
+
+    if (users.length === 0) {
+        users = EDCEPTA_DEMO_USERS.map(function (u) { return Object.assign({}, u); });
+        changed = true;
+    } else {
+        EDCEPTA_DEMO_USERS.forEach(function (demo) {
+            const existing = users.find(function (u) { return u.email === demo.email; });
+            if (!existing) {
+                users.push(Object.assign({}, demo));
+                changed = true;
+            } else {
+                if (existing.password !== demo.password) {
+                    existing.password = demo.password;
+                    changed = true;
+                }
+                if (existing.name === 'Admin User' || existing.name === 'Student User') {
+                    existing.name = demo.name;
+                    changed = true;
+                }
+            }
+        });
+    }
+
+    if (changed) {
+        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+    }
+}
 
 // Initialize Mock Data if empty
 function initializeMockData() {
-    console.log('Initializing Offline Mode...');
-    
-    // Create default users if none exist
-    let users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
-    if (users.length === 0) {
-        users = [
-            {
-                _id: 'user_admin_001',
-                name: 'Admin User',
-                email: 'admin@gurukul.com',
-                password: 'password123',
-                role: 'admin',
-                enrolledCourses: [],
-                wishlist: []
-            },
-            {
-                _id: 'user_student_001',
-                name: 'Student User',
-                email: 'student@gurukul.com',
-                password: 'password123',
-                role: 'student',
-                enrolledCourses: [],
-                wishlist: []
-            }
-        ];
-        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
-        console.log('✓ Created default users (admin@gurukul.com / student@gurukul.com)');
-    }
+    console.log('Initializing EDCEPTA Education (offline mode)...');
+    migrateLegacyEdceptaStorage();
+    ensureEdceptaDemoUsers();
+    console.log('✓ Demo logins: student@educepta.in / admin@educepta.in (password: password123)');
 }
 
 // --------------------------------------------
@@ -46,12 +150,17 @@ function initializeMockData() {
 // --------------------------------------------
 
 function getCurrentUser() {
-    const userStr = localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
+    const userStr =
+        localStorage.getItem(STORAGE_KEYS.CURRENT_USER) ||
+        localStorage.getItem(LEGACY_STORAGE_KEYS.CURRENT_USER);
     return userStr ? JSON.parse(userStr) : null;
 }
 
 function isUserLoggedIn() {
-    return !!localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+    return !!(
+        localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) ||
+        localStorage.getItem(LEGACY_STORAGE_KEYS.AUTH_TOKEN)
+    );
 }
 
 function isUserAdmin() {
@@ -60,7 +169,10 @@ function isUserAdmin() {
 }
 
 function getAuthToken() {
-    return localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+    return (
+        localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) ||
+        localStorage.getItem(LEGACY_STORAGE_KEYS.AUTH_TOKEN)
+    );
 }
 
 function getAllUsers() {
@@ -90,25 +202,36 @@ async function registerUser(name, email, password, role = 'student') {
     localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
     
     // Auto-login
+    const token = 'mock-token-' + Date.now();
     localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(newUser));
-    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, 'mock-token-' + Date.now());
+    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+    // Keep legacy keys in sync to avoid old-script redirect loops
+    localStorage.setItem(LEGACY_STORAGE_KEYS.CURRENT_USER, JSON.stringify(newUser));
+    localStorage.setItem(LEGACY_STORAGE_KEYS.AUTH_TOKEN, token);
     
     return { success: true, data: { user: newUser, token: 'mock-token' } };
 }
 
 async function loginUser(email, password) {
     await new Promise(r => setTimeout(r, 500));
-    
+
+    const normalizedEmail = String(email || '').trim().toLowerCase();
     const users = getAllUsers();
     // Simple password check (insecure but fine for mock)
-    const user = users.find(u => u.email === email && u.password === password);
+    const user = users.find(
+        u => String(u.email || '').trim().toLowerCase() === normalizedEmail && u.password === password
+    );
     
     if (!user) {
         return { success: false, error: 'Invalid credentials' };
     }
     
+    const token = 'mock-token-' + Date.now();
     localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
-    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, 'mock-token-' + Date.now());
+    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+    // Keep legacy keys in sync to avoid old-script redirect loops
+    localStorage.setItem(LEGACY_STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
+    localStorage.setItem(LEGACY_STORAGE_KEYS.AUTH_TOKEN, token);
     
     return { success: true, data: { user, token: 'mock-token' } };
 }
@@ -116,10 +239,12 @@ async function loginUser(email, password) {
 function logoutUser() {
     localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
     localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+    localStorage.removeItem(LEGACY_STORAGE_KEYS.CURRENT_USER);
+    localStorage.removeItem(LEGACY_STORAGE_KEYS.AUTH_TOKEN);
     localStorage.removeItem('selectedCourse');
     localStorage.removeItem('cart');
     localStorage.removeItem('checkoutItems');
-    window.location.reload();
+    window.location.href = '/login';
 }
 
 async function fetchUserProfile() {
