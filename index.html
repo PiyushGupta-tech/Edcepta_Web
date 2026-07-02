@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EDCEPTA EDUCATION</title>
-    <link rel="stylesheet" href="styles.css?v=74">
+    <link rel="stylesheet" href="styles.css?v=84">
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -24,6 +24,7 @@
                     <li><a href="#home">Home</a></li>
                     <li><a href="#courses">Courses</a></li>
                     <li><a href="/about.html">About</a></li>
+                    <li><a href="/why-edcepta.html">Why Us</a></li>
                     <li><a href="#membership">Membership</a></li>
                     <li><a href="/contact.html">Contact</a></li>
                     <li><a href="/checkout" class="nav-cart">🛒 Cart</a></li>
@@ -36,7 +37,7 @@
 
     <!-- Hero Section -->
     <section class="hero" id="home">
-        <div class="hero-content hero-animate">
+        <div class="hero-content">
             <h1 class="hero-title">Learn From The Best</h1>
             <div class="hero-subtitle">
                 <p class="hero-subtitle-lead"><strong>Build Real-World Skills for Future-Ready Careers</strong></p>
@@ -259,13 +260,30 @@
             </section>
 
             <section class="knowledge-layer-section animate-on-scroll" aria-label="Knowledge layer for EDCEPTA">
-                <div class="knowledge-layer-frame">
-                    <img src="images/knowledge-hero.png" alt="Knowledge layer visual" class="knowledge-layer-image" loading="lazy">
-                    <div class="knowledge-layer-overlay">
-                        <div class="knowledge-layer-bottom">
-                            <p class="knowledge-side-note">Your knowledge • your growth asset • endless opportunities</p>
-                            <div class="knowledge-main-copy">
-                                <h3>Personalized paths for AI, cloud, web dev, data science, and certifications.</h3>
+                <div class="knowledge-layer-shell">
+                    <div class="knowledge-layer-shine" aria-hidden="true"></div>
+                    <div class="knowledge-layer-frame">
+                        <div class="knowledge-layer-top-mask" aria-hidden="true"></div>
+                        <img
+                            src="images/knowledge-hero.png"
+                            alt="Futuristic learner exploring the knowledge layer for AI"
+                            class="knowledge-layer-image"
+                            loading="lazy"
+                        >
+                        <div class="knowledge-layer-green-wash" aria-hidden="true"></div>
+                        <div class="knowledge-layer-overlay">
+                            <h2 class="knowledge-layer-title">Knowledge</h2>
+                            <p class="knowledge-layer-badge">// LAYER FOR AI</p>
+                            <div class="knowledge-layer-aside">
+                                <p>// YOUR KNOWLEDGE</p>
+                                <p>YOUR DATA ASSET</p>
+                                <p>ENDLESS AI ROYALTIES</p>
+                            </div>
+                            <div class="knowledge-layer-bottom">
+                                <p class="knowledge-side-note">Your knowledge • your growth asset • endless opportunities</p>
+                                <div class="knowledge-main-copy">
+                                    <h3>Personalized paths for AI, cloud, web dev, data science, and certifications.</h3>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -592,8 +610,8 @@
     </div>
 
     <script src="config.js"></script>
-    <script src="data/courses_data.js?v=4"></script>
-    <script src="script-api.js?v=5"></script>
+    <script src="data/courses_data.js?v=11"></script>
+    <script src="script-api.js?v=6"></script>
 
     <script>
 
@@ -785,7 +803,7 @@
             // Fetch and display courses from API
             console.log('Fetching courses from API...');
             
-            // Initial load using the new pagination-aware displayCourses from script-api.js?v=5
+            // Initial load using the new pagination-aware displayCourses from script-api.js?v=6
             await displayCourses('all', 1);
             setupFilterButtons();
             setupEventListeners();

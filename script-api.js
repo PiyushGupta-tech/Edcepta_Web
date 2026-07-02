@@ -284,6 +284,9 @@ async function fetchCourses(category = 'all', page = 1, searchQuery = '', perPag
             c.description.toLowerCase().includes(query)
         );
     }
+
+    // Newest programs first (includes recently added catalog items)
+    filtered = filtered.slice().sort((a, b) => Number(b._id) - Number(a._id));
     
     // Pagination: use perPage if provided (e.g. admin dashboard can pass a large number to get all)
     const limit = perPage != null ? perPage : coursesPerPage;

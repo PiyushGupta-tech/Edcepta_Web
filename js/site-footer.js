@@ -112,6 +112,7 @@
         '<li><a href="' + href('#home') + '">Home</a></li>' +
         '<li><a href="' + href('#courses') + '">Courses</a></li>' +
         '<li><a href="/about.html">About Us</a></li>' +
+        '<li><a href="/why-edcepta.html">Why EDCEPTA</a></li>' +
         '<li><a href="' + href('#membership') + '">Membership</a></li>' +
         '<li><a href="/faq.html">FAQ</a></li>' +
         '<li><a href="/contact.html">Contact Us</a></li>' +
@@ -122,7 +123,7 @@
         '<div class="footer-section animate-on-scroll" style="--i: 2">' +
         '<h3>Contact</h3>' +
         '<p><strong>EDCEPTA EDUCATION PRIVATE LIMITED</strong></p>' +
-        '<p>Support: <a href="mailto:educepta@gmail.com" class="footer-contact-email">educepta@gmail.com</a></p>' +
+        '<p>Support: <a href="mailto:support@educepta.in" class="footer-contact-email">support@educepta.in</a></p>' +
         '<p>UNIT T-3, B-812, NX ONE, TECHZONE IV, Greater Noida West, Noida, Gautambuddha Nagar, Uttar Pradesh - 201301</p>' +
         '<p>Phone: +91 8287693368</p>' +
         '</div></div>' +

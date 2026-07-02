@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why EDCEPTA - EDCEPTA EDUCATION</title>
+    <link rel="stylesheet" href="styles.css?v=75">
+</head>
+<body class="why-edcepta-body">
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="/" class="logo">
+                    <img src="images/edcepta-logo.png?v=8" alt="EDCEPTA EDUCATION">
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/#courses">Courses</a></li>
+                    <li><a href="/about.html">About</a></li>
+                    <li><a href="/why-edcepta.html" class="nav-active">Why Us</a></li>
+                    <li><a href="/#membership">Membership</a></li>
+                    <li><a href="/contact.html">Contact</a></li>
+                </ul>
+                <button class="hamburger" id="hamburger" type="button" aria-label="Open menu">☰</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="why-edcepta-page">
+        <section class="why-edcepta-hero" aria-labelledby="why-edcepta-heading">
+            <div class="container">
+                <div class="why-edcepta-hero-grid">
+                    <div class="why-edcepta-hero-copy animate-on-scroll">
+                        <p class="why-edcepta-eyebrow">Career-ready learning</p>
+                        <h1 id="why-edcepta-heading">Education that prepares you for what&rsquo;s next.</h1>
+                        <p class="why-edcepta-lead">
+                            Start, switch, or advance your career with career-focused programs, professional
+                            certificates, and expert mentorship from EDCEPTA EDUCATION&mdash;built for learners
+                            who want practical skills, not just theory.
+                        </p>
+                        <a href="/#courses" class="why-edcepta-cta">
+                            Explore Courses <span aria-hidden="true">→</span>
+                        </a>
+                    </div>
+
+                    <div class="why-edcepta-hero-visual animate-on-scroll" style="--i: 1">
+                        <div class="why-edcepta-visual-frame">
+                            <img
+                                src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=900&h=1050&fit=crop&q=80"
+                                alt="EDCEPTA learner with study materials"
+                                class="why-edcepta-hero-img"
+                                loading="lazy"
+                                width="900"
+                                height="1050"
+                            >
+                            <div class="why-edcepta-badge why-edcepta-badge--success" aria-label="93 percent success rates">
+                                <span class="why-edcepta-badge-icon" aria-hidden="true">✓</span>
+                                <span class="why-edcepta-badge-text">
+                                    <strong>93%</strong>
+                                    <span>Success Rates</span>
+                                </span>
+                            </div>
+                            <div class="why-edcepta-badge why-edcepta-badge--star" aria-hidden="true">★</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="why-edcepta-features" aria-label="Learner support highlights">
+            <div class="container">
+                <div class="why-edcepta-feature-grid">
+                    <article class="why-edcepta-feature-card animate-on-scroll" style="--i: 0">
+                        <h2>24/7 help</h2>
+                        <p>
+                            Our mentor network and learner support team can motivate and guide you anytime&mdash;no
+                            matter where you are on your journey.
+                        </p>
+                        <a href="/contact.html">More about this <span aria-hidden="true">↗</span></a>
+                    </article>
+                    <article class="why-edcepta-feature-card animate-on-scroll" style="--i: 1">
+                        <h2>1-hour avg. response time</h2>
+                        <p>
+                            Get your queries answered quickly and clearly, usually within one hour during
+                            business hours.
+                        </p>
+                        <a href="/faq.html">More about this <span aria-hidden="true">↗</span></a>
+                    </article>
+                    <article class="why-edcepta-feature-card animate-on-scroll" style="--i: 2">
+                        <h2>Highly vetted</h2>
+                        <p>
+                            Our instructors complete a rigorous hiring process and bring real industry
+                            experience to every program they teach.
+                        </p>
+                        <a href="/about.html">More about this <span aria-hidden="true">↗</span></a>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer" aria-label="Site footer"></footer>
+    <script src="js/site-footer.js?v=8"></script>
+    <script>
+        document.getElementById('hamburger').addEventListener('click', function () {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        if (typeof IntersectionObserver !== 'undefined') {
+            var observer = new IntersectionObserver(
+                function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) entry.target.classList.add('animate-in');
+                    });
+                },
+                { rootMargin: '0px 0px -40px 0px', threshold: 0.08 }
+            );
+            document.querySelectorAll('.animate-on-scroll').forEach(function (el) {
+                observer.observe(el);
+            });
+        }
+    </script>
+</body>
+</html>

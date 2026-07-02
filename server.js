@@ -12,6 +12,7 @@ const REWRITES = {
   '/checkout': '/checkout.html',
   '/contact': '/contact.html',
   '/about': '/about.html',
+  '/why-edcepta': '/why-edcepta.html',
   '/faq': '/faq.html',
   '/membership': '/membership.html',
   '/course-details': '/course-details.html',
