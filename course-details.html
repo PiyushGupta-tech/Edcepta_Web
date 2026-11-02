@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EDCEPTA EDUCATION</title>
-    <link rel="stylesheet" href="styles.css?v=54">
+    <link rel="stylesheet" href="styles.css?v=87">
     <style>
         .course-details-container {
             display: grid;
@@ -313,7 +313,7 @@
     <script src="js/site-footer.js?v=7"></script>
 
 <script src="config.js"></script>
-    <script src="data/courses_data.js?v=11"></script>
+    <script src="data/courses_data.js?v=20"></script>
     <script src="script-api.js?v=5"></script>
     <script>
         // Get course from URL parameter (course ID)
@@ -405,11 +405,16 @@
                         return;
                     }
 
-                    localStorage.setItem('selectedCourse', JSON.stringify({
+                    const item = {
                         id: course._id,
                         title: course.title,
-                        price: course.price
-                    }));
+                        price: course.price,
+                        quantity: 1
+                    };
+                    // Replace any previous checkout (e.g. another course at a different price)
+                    localStorage.setItem('selectedCourse', JSON.stringify(item));
+                    localStorage.setItem('checkoutItems', JSON.stringify([item]));
+                    localStorage.setItem('cart', JSON.stringify([item]));
                     window.location.href = '/checkout';
                 });
             }
@@ -435,10 +440,13 @@
                     if (!existingItem) {
                         cart.push(courseItem);
                         localStorage.setItem('cart', JSON.stringify(cart));
+                        localStorage.setItem('checkoutItems', JSON.stringify(cart));
+                        localStorage.removeItem('selectedCourse');
                         alert(`${course.title} added to cart!`);
                     } else {
                         alert('This course is already in your cart!');
                     }
+                    window.location.href = '/checkout';
                 });
             }
         });

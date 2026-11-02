@@ -117,7 +117,7 @@
         '<li><a href="/faq.html">FAQ</a></li>' +
         '<li><a href="/contact.html">Contact Us</a></li>' +
         '<li><a href="/privacy-policy.html">Privacy Policy</a></li>' +
-        '<li><a href="/return-refund-policy.html">Return Policy</a></li>' +
+        '<li><a href="/return-refund-policy.html">Refund &amp; Cancellation Policy</a></li>' +
         '<li><a href="/terms-conditions.html">Terms of Service</a></li>' +
         '</ul></div>' +
         '<div class="footer-section animate-on-scroll" style="--i: 2">' +

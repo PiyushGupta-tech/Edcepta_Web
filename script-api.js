@@ -681,7 +681,7 @@ function openModal(courseId) {
     if (descEl) descEl.textContent = course.description;
     if (durationEl) durationEl.textContent = course.duration;
     if (studentsEl) studentsEl.textContent = course.students;
-    if (priceEl) priceEl.textContent = course.price;
+    if (priceEl) priceEl.textContent = '₹' + Number(course.price).toLocaleString();
 
     modal.style.display = 'block';
 
@@ -724,6 +724,8 @@ async function addToCart(courseId) {
     if (!existingItem) {
         cart.push({ id: course._id, title: course.title, price: course.price, quantity: 1 });
         localStorage.setItem('cart', JSON.stringify(cart));
+        localStorage.setItem('checkoutItems', JSON.stringify(cart));
+        localStorage.removeItem('selectedCourse');
         showToast(`${course.title} added to cart!`, 'success');
     } else {
         showToast('This course is already in your cart.', 'info');
@@ -735,12 +737,16 @@ async function addToCart(courseId) {
 async function buyNow(courseId) {
     const course = await getCourseById(courseId);
     if (!course) return;
-    
-    localStorage.setItem('selectedCourse', JSON.stringify({
+
+    const item = {
         id: course._id,
         title: course.title,
-        price: course.price
-    }));
+        price: course.price,
+        quantity: 1
+    };
+    localStorage.setItem('selectedCourse', JSON.stringify(item));
+    localStorage.setItem('checkoutItems', JSON.stringify([item]));
+    localStorage.setItem('cart', JSON.stringify([item]));
     window.location.href = '/checkout';
 }
 

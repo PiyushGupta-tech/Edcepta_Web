@@ -33,7 +33,7 @@ const courses = [
         category: "web-development",
         duration: "8 Weeks",
         students: "3.5K",
-        price: 20000,
+        price: 1000,
         description: "Learn to build complete web applications using modern technologies like React, Node.js, and MongoDB.",
         image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=400&fit=crop"
     },
@@ -83,7 +83,7 @@ const courses = [
         category: "data-science",
         duration: "8 Weeks",
         students: "1.5K",
-        price: 65000,
+        price: 40000,
         description: "Learn to build scalable data pipelines using Apache Spark, Hadoop, and distributed systems.",
         image: "https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=600&h=400&fit=crop"
     },
@@ -334,7 +334,7 @@ function openModal(courseId) {
     document.getElementById('modalDescription').textContent = course.description;
     document.getElementById('modalDuration').textContent = course.duration;
     document.getElementById('modalStudents').textContent = course.students;
-    document.getElementById('modalPrice').textContent = course.price;
+    document.getElementById('modalPrice').textContent = '₹' + course.price.toLocaleString();
 
     document.getElementById('courseModal').style.display = 'block';
 

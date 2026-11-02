@@ -4,7 +4,7 @@
 #   ./deploy-rsync.sh root@185.199.53.121
 set -euo pipefail
 HOST="${1:?Usage: $0 user@host}"
-SSH_PORT="${SSH_PORT:-21761}"
+SSH_PORT="${SSH_PORT:-44042}"
 REMOTE_DIR="/www/wwwroot/Edcepta"
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 RSYNC_SSH="ssh -p ${SSH_PORT}"
@@ -19,6 +19,8 @@ rsync -avz --delete \
   --exclude '.cursor' \
   --exclude 'node_modules' \
   --exclude 'server.js' \
+  --exclude 'api/urbanrupee-node.js' \
+  --exclude 'api/orders/' \
   --exclude 'script-api.js.bak' \
   --exclude '.tmp-zohan*' \
   --exclude 'nginx-zohanedu-snippet.conf' \

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Status - EDCEPTA EDUCATION</title>
+    <link rel="stylesheet" href="styles.css?v=87">
+    <style>
+        .pay-return {
+            max-width: 640px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid rgba(30, 41, 59, 0.1);
+            box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08);
+            text-align: center;
+        }
+        .pay-return h1 { margin-bottom: 0.75rem; color: #14285A; }
+        .pay-return .status-badge {
+            display: inline-block;
+            margin: 0.75rem 0 1.25rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .status-badge.success { background: #dcfce7; color: #166534; }
+        .status-badge.failed, .status-badge.failure { background: #fee2e2; color: #991b1b; }
+        .status-badge.pending { background: #ffedd5; color: #9a3412; }
+        .pay-meta { text-align: left; margin: 1.25rem 0; color: #475569; line-height: 1.7; }
+        .pay-meta strong { color: #1e293b; }
+        .pay-actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="/" class="logo">
+                    <img src="images/edcepta-logo.png?v=8" alt="EDCEPTA EDUCATION">
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/#courses">Courses</a></li>
+                    <li><a href="/contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="pay-return" id="payReturn">
+            <h1>Checking payment…</h1>
+            <p id="payMessage">Please wait while we confirm your payment status.</p>
+            <div id="payBadge" class="status-badge pending" style="display:none;"></div>
+            <div id="payMeta" class="pay-meta" style="display:none;"></div>
+            <div class="pay-actions">
+                <a class="btn btn-primary" href="/user-dashboard">Go to Dashboard</a>
+                <a class="btn" href="/" style="background:#e2e8f0;color:#1e293b;text-decoration:none;padding:0.7rem 1.2rem;border-radius:8px;font-weight:600;">Home</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="config.js"></script>
+    <script>
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const orderid = params.get('orderid') || params.get('order_id') || localStorage.getItem('pendingPaymentOrderId') || '';
+            let status = (params.get('status') || '').toLowerCase();
+            const amount = params.get('amount') || '';
+            const utr = params.get('utr') || '';
+
+            const titleEl = document.querySelector('#payReturn h1');
+            const msgEl = document.getElementById('payMessage');
+            const badge = document.getElementById('payBadge');
+            const meta = document.getElementById('payMeta');
+
+            function render(finalStatus, data) {
+                const s = (finalStatus || 'pending').toLowerCase();
+                const ok = s === 'success' || s === 'paid' || s === 'captured';
+                const fail = s === 'failed' || s === 'failure' || s === 'cancelled' || s === 'canceled';
+
+                titleEl.textContent = ok ? 'Payment successful' : fail ? 'Payment failed' : 'Payment pending';
+                badge.style.display = 'inline-block';
+                badge.className = 'status-badge ' + (ok ? 'success' : fail ? 'failed' : 'pending');
+                badge.textContent = ok ? 'SUCCESS' : fail ? 'FAILED' : 'PENDING';
+
+                msgEl.textContent = ok
+                    ? 'Thank you! Your payment was received. Course access will appear on your dashboard shortly.'
+                    : fail
+                    ? 'Your payment was not completed. You can try again from checkout or contact support.'
+                    : 'We are still confirming your payment. You can refresh this page in a moment.';
+
+                const rows = [];
+                const oid = (data && data.orderid) || orderid;
+                if (oid) rows.push('<div><strong>Order ID:</strong> ' + oid + '</div>');
+                const amt = (data && data.amount) || amount;
+                if (amt) rows.push('<div><strong>Amount:</strong> ₹' + amt + '</div>');
+                const u = (data && data.utr) || utr;
+                if (u) rows.push('<div><strong>UTR:</strong> ' + u + '</div>');
+                if (rows.length) {
+                    meta.style.display = 'block';
+                    meta.innerHTML = rows.join('');
+                }
+
+                if (ok) {
+                    localStorage.removeItem('checkoutItems');
+                    localStorage.removeItem('cart');
+                    localStorage.removeItem('selectedCourse');
+                    localStorage.removeItem('pendingPaymentOrderId');
+                }
+            }
+
+            async function checkStatus() {
+                if (!orderid) {
+                    render(status || 'pending', null);
+                    return;
+                }
+                try {
+                    const endpoints = (typeof CONFIG !== 'undefined' && CONFIG.PAYMENT_API)
+                        ? CONFIG.PAYMENT_API.checkStatusCandidates
+                        : ['/api/utility/checkstatus', '/api/utility-checkstatus.php'];
+                    let data = null;
+                    for (const url of endpoints) {
+                        try {
+                            const res = await fetch(url, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ orderid: orderid })
+                            });
+                            if (!res.ok) continue;
+                            data = await res.json();
+                            if (data) break;
+                        } catch (e) { /* try next */ }
+                    }
+                    const nested = data && data.data ? data.data : null;
+                    const st = (nested && nested.status) || status || 'pending';
+                    render(st, nested || { orderid: orderid, amount: amount, utr: utr });
+                } catch (e) {
+                    render(status || 'pending', { orderid: orderid, amount: amount, utr: utr });
+                }
+            }
+
+            if (status) {
+                render(status, { orderid: orderid, amount: amount, utr: utr });
+            }
+            checkStatus();
+        })();
+    </script>
+</body>
+</html>

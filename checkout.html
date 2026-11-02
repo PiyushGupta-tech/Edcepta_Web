@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EDCEPTA EDUCATION</title>
-    <link rel="stylesheet" href="styles.css?v=54">
+    <link rel="stylesheet" href="styles.css?v=87">
     <style>
         .checkout-container {
             display: grid;
@@ -526,7 +526,7 @@
                             <span id="discount" style="color: var(--success-color);">-₹0</span>
                         </div>
                         <div class="summary-row">
-                            <span>Tax (18%):</span>
+                            <span>GST (18%):</span>
                             <span id="tax">₹0</span>
                         </div>
                         <div class="summary-row total">
@@ -538,11 +538,11 @@
 
                         <div class="guarantee">
                             <span class="guarantee-icon">✓</span>
-                            <span>30-day money-back guarantee</span>
+                            <span>Cancel within 4 hours for a full refund</span>
                         </div>
                         <div class="guarantee">
                             <span class="guarantee-icon">🔒</span>
-                            <span>Secure payment with SSL encryption</span>
+                            <span>Secure card checkout via UrbanRupee</span>
                         </div>
                     </div>
                 </div>
@@ -562,7 +562,7 @@
     <script src="js/site-footer.js?v=7"></script>
 
 <script src="config.js"></script>
-    <script src="data/courses_data.js?v=11"></script>
+    <script src="data/courses_data.js?v=20"></script>
     <script src="script-api.js?v=5"></script>
     <script>
         let discountAmount = 0;
@@ -596,12 +596,12 @@
             const checkoutItems = JSON.parse(localStorage.getItem('checkoutItems')) || [];
             let allItems = [];
 
-            // Priority: checkoutItems > selectedCourse > cart
-            if (checkoutItems.length > 0) {
-                allItems = checkoutItems;
-            } else if (selectedCourse) {
+            // Buy Now always wins over any previous checkout session
+            if (selectedCourse) {
                 allItems = [selectedCourse];
                 localStorage.removeItem('selectedCourse');
+            } else if (checkoutItems.length > 0) {
+                allItems = checkoutItems;
             } else if (cart.length > 0) {
                 allItems = cart;
             } else {
@@ -613,12 +613,13 @@
             itemsContainer.innerHTML = '';
 
             allItems.forEach((item, index) => {
+                const price = parseInt(item.price, 10) || 0;
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'cart-item';
                 itemDiv.innerHTML = `
                     <div class="cart-item-info">
                         <div class="cart-item-name">${item.title}</div>
-                        <div class="cart-item-price">₹${parseInt(item.price).toLocaleString()}</div>
+                        <div class="cart-item-price">₹${price.toLocaleString()}</div>
                     </div>
                     <button class="cart-item-remove" onclick="removeItem(${index})"></button>
                 `;
@@ -631,6 +632,7 @@
 
             // Always store items as checkoutItems for consistency
             localStorage.setItem('checkoutItems', JSON.stringify(allItems));
+            localStorage.setItem('cart', JSON.stringify(allItems));
         }
 
         function removeItem(index) {
@@ -668,11 +670,13 @@
 
         function calculateTotal() {
             const items = JSON.parse(localStorage.getItem('checkoutItems')) || [];
-            const subtotal = items.reduce((sum, item) => sum + parseInt(item.price), 0);
-            const tax = Math.round(subtotal * 0.18);
-            const total = subtotal - discountAmount + tax;
+            // Listed product prices are FINAL after 18% GST. Charge listed total only.
+            const listed = items.reduce((sum, item) => sum + parseInt(item.price, 10), 0);
+            const total = Math.max(0, listed - discountAmount);
+            const tax = Math.round(total * 18 / 118);
+            const subtotalBeforeGst = total - tax;
 
-            document.getElementById('subtotal').textContent = '₹' + subtotal.toLocaleString();
+            document.getElementById('subtotal').textContent = '₹' + subtotalBeforeGst.toLocaleString();
             document.getElementById('discount').textContent = '-₹' + discountAmount.toLocaleString();
             document.getElementById('tax').textContent = '₹' + tax.toLocaleString();
             document.getElementById('total').textContent = '₹' + total.toLocaleString();
@@ -727,6 +731,37 @@
             });
         }
 
+        function normalizePhone10(value) {
+            var digits = String(value || '').replace(/\D+/g, '');
+            if (digits.length > 10 && digits.indexOf('91') === 0) {
+                digits = digits.slice(-10);
+            }
+            return digits;
+        }
+
+        async function postPaymentApi(candidates, payload) {
+            var lastError = 'Payment service unavailable.';
+            for (var i = 0; i < candidates.length; i++) {
+                try {
+                    var res = await fetch(candidates[i], {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    var data = null;
+                    try { data = await res.json(); } catch (e) { data = null; }
+                    if (res.ok && data && data.status && data.checkout_url) {
+                        return data;
+                    }
+                    if (data && data.message) lastError = data.message;
+                    else if (!res.ok) lastError = 'Payment request failed (' + res.status + ').';
+                } catch (err) {
+                    lastError = err.message || lastError;
+                }
+            }
+            throw new Error(lastError);
+        }
+
         async function completeCheckout() {
             hideCheckoutMessage();
 
@@ -746,98 +781,88 @@
                 }
             }
 
-            const paymentMethod = document.getElementById('paymentMethod').value;
-
             if (!document.getElementById('agreeTerms').checked) {
                 showCheckoutMessage('Please agree to the terms and conditions.', 'error');
                 return;
             }
 
+            const phone = normalizePhone10(document.getElementById('phone').value);
+            if (phone.length !== 10) {
+                showCheckoutMessage('Please enter a valid 10-digit mobile number.', 'error');
+                return;
+            }
+
             const checkoutBtn = document.getElementById('completeCheckoutBtn');
             const originalText = checkoutBtn.innerText;
-            checkoutBtn.innerText = 'Processing...';
+            checkoutBtn.innerText = 'Redirecting to payment...';
             checkoutBtn.disabled = true;
 
             try {
                 const items = JSON.parse(localStorage.getItem('checkoutItems')) || [];
-                
+
                 if (items.length === 0) {
                     showCheckoutMessage('Your cart is empty.', 'error');
-                    checkoutBtn.innerText = originalText;
-                    checkoutBtn.disabled = false;
                     return;
                 }
 
-                // Payments disabled until gateway is live
                 if (typeof CONFIG !== 'undefined' && CONFIG.PAYMENTS_ENABLED === false) {
-                    await new Promise(function (r) { setTimeout(r, 500); });
                     showCheckoutMessage('Payment is not available right now.', 'payment-unavailable');
                     return;
                 }
 
-                // Collect billing info
-                const billingInfo = {
-                    name: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value,
-                    email: document.getElementById('email').value,
-                    phone: document.getElementById('phone').value,
-                    address: document.getElementById('address').value,
-                    city: document.getElementById('city').value,
-                    state: document.getElementById('state').value,
-                    zipCode: document.getElementById('postalCode').value,
-                    country: document.getElementById('country').value
-                };
+                const listed = items.reduce(function (sum, item) {
+                    return sum + parseInt(item.price, 10);
+                }, 0);
+                // Listed price is final after GST — do not add 18% again
+                const total = Math.max(0, Math.round(listed - discountAmount));
+                const tax = Math.round(total * 18 / 118);
 
-                let successCount = 0;
-                let failCount = 0;
-                let lastOrderId = '';
-
-                // Backend currently supports single course per order, so we loop
-                for (const item of items) {
-                    const price = parseInt(item.price);
-                    
-                    const orderData = {
-                        courseId: item.id || item._id, // Handle both formats
-                        amount: price,
-                        discount: 0, // Ignoring partial discount for simplicity
-                        tax: Math.round(price * 0.18),
-                        paymentMethod: paymentMethod,
-                        billingInfo: billingInfo,
-                        promoCode: document.getElementById('promoCode').value || null
-                    };
-
-                    const result = await createOrder(orderData);
-                    if (result.success) {
-                        successCount++;
-                         lastOrderId = result.data._id || result.data.id;
-                    } else {
-                        console.error('Order failed for item:', item.title, result.error);
-                        failCount++;
-                    }
+                if (total < 100) {
+                    showCheckoutMessage('Minimum payable amount is ₹100.', 'error');
+                    return;
+                }
+                if (total > 100000) {
+                    showCheckoutMessage('Maximum payable amount per transaction is ₹1,00,000. Please reduce cart items.', 'error');
+                    return;
                 }
 
-                if (successCount > 0) {
-                    // Clear cart
-                    localStorage.removeItem('checkoutItems');
-                    localStorage.removeItem('cart');
-                    localStorage.removeItem('selectedCourse');
+                const name = (
+                    document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value
+                ).trim();
+                const email = document.getElementById('email').value.trim();
 
-                    // Show success message on page
-                    const msg = failCount > 0 
-                        ? `Orders placed partially. ${successCount} successful, ${failCount} failed.`
-                        : `Order placed successfully! Order ID: ${lastOrderId}. Total items: ${successCount}. Check your email for confirmation.`;
-                    showCheckoutMessage(msg, 'success');
+                const candidates = (CONFIG && CONFIG.PAYMENT_API && CONFIG.PAYMENT_API.initiateCandidates)
+                    ? CONFIG.PAYMENT_API.initiateCandidates
+                    : ['/api/utility/initiate', '/api/utility-initiate.php'];
 
-                    // Redirect to user dashboard
-                    setTimeout(() => {
-                        window.location.href = '/user-dashboard';
-                    }, 2000);
-                } else {
-                    showCheckoutMessage('We couldn\'t place your order. Please try again.', 'error');
+                const result = await postPaymentApi(candidates, {
+                    amount: total,
+                    name: name,
+                    mobile: phone,
+                    email: email,
+                    items: items.map(function (item) {
+                        return {
+                            id: item.id || item._id || '',
+                            title: item.title || '',
+                            price: parseInt(item.price, 10) || 0
+                        };
+                    })
+                });
+
+                if (result.orderid) {
+                    localStorage.setItem('pendingPaymentOrderId', result.orderid);
                 }
 
+                // Open UrbanRupee hosted checkout
+                window.location.href = result.checkout_url;
             } catch (error) {
                 console.error('Checkout error:', error);
-                showCheckoutMessage('Payment page is under process. Please <a href="/contact" style="color: var(--primary-mint-dark); font-weight: 600;">contact us</a> to complete your purchase.', 'info');
+                showCheckoutMessage(
+                    (error && error.message)
+                        ? error.message
+                        : 'Unable to open payment page. Please try again or <a href="/contact.html" style="color: var(--primary-mint-dark); font-weight: 600;">contact us</a>.',
+                    'error'
+                );
             } finally {
                 checkoutBtn.innerText = originalText;
                 checkoutBtn.disabled = false;
